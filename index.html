@@ -1,0 +1,351 @@
+<!DOCTYPE html>
+<html lang="fr" data-theme="dark">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover"/>
+  <meta name="mobile-web-app-capable" content="yes"/>
+  <meta name="apple-mobile-web-app-capable" content="yes"/>
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"/>
+  <title>DepensIQ</title>
+  <link rel="stylesheet" href="style.css"/>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Mono:wght@300;400;500&family=Syne:wght@400;600;800&display=swap" rel="stylesheet"/>
+</head>
+<body>
+
+  <!-- ══ TOPBAR MOBILE ══ -->
+  <header class="topbar">
+    <button class="hamburger" id="hamburgerBtn" aria-label="Menu">
+      <span></span><span></span><span></span>
+    </button>
+    <div class="topbar-brand">
+      <span class="logo-icon">◈</span>
+      <span class="logo-text">DepensIQ</span>
+    </div>
+    <button class="topbar-add" id="topbarAddBtn" aria-label="Ajouter">+</button>
+  </header>
+
+  <div class="sidebar-overlay" id="sidebarOverlay"></div>
+
+  <!-- ══ SIDEBAR ══ -->
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar-top">
+      <div class="logo">
+        <span class="logo-icon">◈</span>
+        <span class="logo-text">DepensIQ</span>
+      </div>
+      <button class="sidebar-close" id="sidebarClose">✕</button>
+    </div>
+    <nav class="nav">
+      <a class="nav-item active" data-view="dashboard" href="#"><span class="nav-icon">▦</span><span>Tableau de bord</span></a>
+      <a class="nav-item" data-view="transactions" href="#"><span class="nav-icon">≡</span><span>Transactions</span></a>
+      <a class="nav-item" data-view="budgets" href="#"><span class="nav-icon">◎</span><span>Budgets</span></a>
+      <a class="nav-item" data-view="stats" href="#"><span class="nav-icon">∿</span><span>Statistiques</span></a>
+      <a class="nav-item" data-view="categories" href="#"><span class="nav-icon">⊞</span><span>Catégories</span></a>
+    </nav>
+    <div class="sidebar-footer">
+      <div class="month-selector">
+        <button id="prevMonth">‹</button>
+        <span id="currentMonthLabel">—</span>
+        <button id="nextMonth">›</button>
+      </div>
+      <button class="theme-toggle" id="themeToggle">
+        <span id="themeIcon">☀</span><span id="themeLabel"> Mode clair</span>
+      </button>
+    </div>
+  </aside>
+
+  <!-- ══ MAIN ══ -->
+  <main class="main">
+
+    <!-- DASHBOARD -->
+    <section class="view active" id="view-dashboard">
+      <header class="page-header">
+        <div>
+          <p class="page-subtitle">Vue générale</p>
+          <h1 class="page-title">Tableau de bord</h1>
+        </div>
+        <button class="btn-primary desktop-only" id="openAddModal">+ Ajouter</button>
+      </header>
+
+      <!-- KPIs -->
+      <div class="kpi-grid">
+        <div class="kpi-card kpi-balance">
+          <span class="kpi-label">Solde cumulé</span>
+          <span class="kpi-value" id="kpi-balance">0 FCFA</span>
+          <span class="kpi-trend" id="kpi-balance-trend"></span>
+        </div>
+        <div class="kpi-card kpi-income">
+          <span class="kpi-label">Revenus</span>
+          <span class="kpi-value" id="kpi-income">0 FCFA</span>
+        </div>
+        <div class="kpi-card kpi-expense">
+          <span class="kpi-label">Dépenses</span>
+          <span class="kpi-value" id="kpi-expense">0 FCFA</span>
+        </div>
+        <div class="kpi-card kpi-savings">
+          <span class="kpi-label">Épargne du mois</span>
+          <span class="kpi-value" id="kpi-savings">0 FCFA</span>
+        </div>
+      </div>
+
+      <!-- CARTE DETTE -->
+      <div class="dette-card" id="dette-card">
+        <div class="dette-left">
+          <span class="dette-icon">🏦</span>
+          <div class="dette-info">
+            <span class="dette-label">Dette totale</span>
+            <span class="dette-sublabel">Emprunts reçus non remboursés</span>
+          </div>
+        </div>
+        <div class="dette-right">
+          <span class="dette-value" id="dette-value">0 FCFA</span>
+          <span class="dette-badge" id="dette-badge">Aucune dette</span>
+        </div>
+      </div>
+
+      <div class="dashboard-grid">
+        <div class="card card-recent">
+          <div class="card-header">
+            <h2>Dernières transactions</h2>
+            <a href="#" class="card-link" data-view="transactions">Voir tout →</a>
+          </div>
+          <ul class="tx-list" id="recent-list">
+            <li class="tx-empty">Aucune transaction ce mois</li>
+          </ul>
+        </div>
+
+        <div class="card card-donut">
+          <div class="card-header"><h2>Répartition dépenses</h2></div>
+          <div class="donut-wrap">
+            <svg viewBox="0 0 200 200" class="donut-svg" id="donut-svg">
+              <circle cx="100" cy="100" r="70" fill="none" stroke="var(--donut-bg)" stroke-width="30"/>
+            </svg>
+            <div class="donut-center" id="donut-center"><span>—</span></div>
+          </div>
+          <ul class="legend" id="donut-legend"></ul>
+        </div>
+
+        <div class="card card-bar">
+          <div class="card-header">
+            <h2>Histogramme (6 mois)</h2>
+            <div class="chart-legend-inline">
+              <span class="cli cli-income">Rev.</span>
+              <span class="cli cli-expense">Dép.</span>
+              <span class="cli cli-savings">Éparg.</span>
+            </div>
+          </div>
+          <div class="bar-chart" id="bar-chart"></div>
+        </div>
+
+        <div class="card card-line">
+          <div class="card-header">
+            <h2>Courbe d'évolution (6 mois)</h2>
+            <div class="chart-legend-inline">
+              <span class="cli cli-income">Rev.</span>
+              <span class="cli cli-expense">Dép.</span>
+              <span class="cli cli-savings">Éparg.</span>
+            </div>
+          </div>
+          <div class="line-chart-wrap">
+            <svg class="line-svg" id="line-svg" viewBox="0 0 600 180" preserveAspectRatio="xMidYMid meet"></svg>
+            <div class="line-x-labels" id="line-x-labels"></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- TRANSACTIONS -->
+    <section class="view" id="view-transactions">
+      <header class="page-header">
+        <div><p class="page-subtitle">Historique complet</p><h1 class="page-title">Transactions</h1></div>
+        <button class="btn-primary desktop-only" id="openAddModal2">+ Ajouter</button>
+      </header>
+      <div class="filters">
+        <input type="text" id="search" placeholder="Rechercher…" class="filter-input"/>
+        <select id="filter-type" class="filter-select">
+          <option value="all">Tous</option>
+          <option value="expense">Dépenses</option>
+          <option value="income">Revenus</option>
+        </select>
+        <select id="filter-cat" class="filter-select"><option value="all">Toutes catégories</option></select>
+      </div>
+      <div class="card">
+        <ul class="tx-list tx-list-full" id="all-tx-list">
+          <li class="tx-empty">Aucune transaction</li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- BUDGETS -->
+    <section class="view" id="view-budgets">
+      <header class="page-header">
+        <div><p class="page-subtitle">Limites mensuelles</p><h1 class="page-title">Budgets</h1></div>
+        <button class="btn-primary" id="openBudgetModal">+ Budget</button>
+      </header>
+      <div class="budget-grid" id="budget-grid">
+        <p class="tx-empty" style="grid-column:1/-1">Aucun budget défini</p>
+      </div>
+    </section>
+
+    <!-- STATISTIQUES -->
+    <section class="view" id="view-stats">
+      <header class="page-header">
+        <div><p class="page-subtitle">Analyse approfondie</p><h1 class="page-title">Statistiques</h1></div>
+      </header>
+      <div class="stats-grid">
+        <div class="card">
+          <div class="card-header"><h2>Top catégories — dépenses</h2></div>
+          <div id="stats-top-cat"></div>
+        </div>
+        <div class="card stats-annual-card">
+          <div class="card-header"><h2>Résumé 12 mois</h2></div>
+          <div class="annual-table-wrap">
+            <table class="annual-table">
+              <thead>
+                <tr>
+                  <th>Mois</th>
+                  <th class="col-income">Revenus</th>
+                  <th class="col-expense">Dépenses</th>
+                  <th class="col-savings">Épargne</th>
+                </tr>
+              </thead>
+              <tbody id="stats-annual-body"></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- CATÉGORIES -->
+    <section class="view" id="view-categories">
+      <header class="page-header">
+        <div><p class="page-subtitle">Personnalisation</p><h1 class="page-title">Catégories</h1></div>
+        <button class="btn-primary" id="openCatModal">+ Catégorie</button>
+      </header>
+      <div class="cat-section">
+        <h3 class="cat-section-title">🔴 Dépenses</h3>
+        <div class="cat-grid" id="cat-grid-expense"></div>
+      </div>
+      <div class="cat-section">
+        <h3 class="cat-section-title">🟢 Revenus</h3>
+        <div class="cat-grid" id="cat-grid-income"></div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- FAB -->
+  <button class="fab" id="fabAdd" aria-label="Ajouter une transaction">+</button>
+
+  <!-- BOTTOM NAV -->
+  <nav class="bottom-nav" id="bottomNav">
+    <a class="bn-item active" data-view="dashboard" href="#"><span class="bn-icon">▦</span><span class="bn-label">Accueil</span></a>
+    <a class="bn-item" data-view="transactions" href="#"><span class="bn-icon">≡</span><span class="bn-label">Opérations</span></a>
+    <a class="bn-item" data-view="budgets" href="#"><span class="bn-icon">◎</span><span class="bn-label">Budgets</span></a>
+    <a class="bn-item" data-view="stats" href="#"><span class="bn-icon">∿</span><span class="bn-label">Stats</span></a>
+    <a class="bn-item" data-view="categories" href="#"><span class="bn-icon">⊞</span><span class="bn-label">Catégories</span></a>
+  </nav>
+
+  <!-- ══ MODALS ══ -->
+
+  <!-- Modal Transaction -->
+  <div class="modal-overlay" id="modal-add">
+    <div class="modal">
+      <button class="modal-close" id="closeModal">✕</button>
+      <h2 class="modal-title">Nouvelle transaction</h2>
+      <div class="type-toggle">
+        <button class="toggle-btn active" data-type="expense">Dépense</button>
+        <button class="toggle-btn" data-type="income">Revenu</button>
+      </div>
+
+      <!-- Alerte solde insuffisant -->
+      <div class="alert-insufficient" id="alert-insufficient" style="display:none">
+        <span class="alert-icon">⚠️</span>
+        <div>
+          <strong>Impossible !</strong> Vous n'avez pas assez d'argent.<br>
+          <span class="alert-conseil">Conseil : veuillez emprunter de l'argent.</span>
+        </div>
+      </div>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label>Montant (FCFA)</label>
+          <input type="number" id="tx-amount" placeholder="0" min="0" step="1" inputmode="numeric"/>
+        </div>
+        <div class="form-group">
+          <label>Date</label>
+          <input type="date" id="tx-date"/>
+        </div>
+      </div>
+      <div class="form-group">
+        <label>Catégorie</label>
+        <select id="tx-cat"></select>
+      </div>
+      <div class="form-group">
+        <label>Note (optionnel)</label>
+        <input type="text" id="tx-note" placeholder="Détails…"/>
+      </div>
+      <button class="btn-primary btn-full" id="saveTransaction">Enregistrer</button>
+    </div>
+  </div>
+
+  <!-- Modal Budget -->
+  <div class="modal-overlay" id="modal-budget">
+    <div class="modal">
+      <button class="modal-close" id="closeBudgetModal">✕</button>
+      <h2 class="modal-title">Définir un budget</h2>
+      <div class="form-group">
+        <label>Catégorie de dépense</label>
+        <select id="budget-cat"></select>
+      </div>
+      <div class="form-group">
+        <label>Limite mensuelle (FCFA)</label>
+        <input type="number" id="budget-limit" placeholder="0" min="0" step="1" inputmode="numeric"/>
+      </div>
+      <button class="btn-primary btn-full" id="saveBudget">Enregistrer</button>
+    </div>
+  </div>
+
+  <!-- Modal Catégorie -->
+  <div class="modal-overlay" id="modal-cat">
+    <div class="modal">
+      <button class="modal-close" id="closeCatModal">✕</button>
+      <h2 class="modal-title">Nouvelle catégorie</h2>
+      <div class="type-toggle">
+        <button class="toggle-btn active" data-cattype="expense">Dépense</button>
+        <button class="toggle-btn" data-cattype="income">Revenu</button>
+      </div>
+      <div class="form-group">
+        <label>Nom</label>
+        <input type="text" id="cat-name" placeholder="Ex : Épicerie"/>
+      </div>
+      <div class="form-group">
+        <label>Icône (emoji)</label>
+        <input type="text" id="cat-icon" placeholder="🛍" maxlength="4"/>
+      </div>
+      <div class="form-group">
+        <label>Couleur</label>
+        <input type="color" id="cat-color" value="#e8c547"/>
+      </div>
+      <button class="btn-primary btn-full" id="saveCat">Créer</button>
+    </div>
+  </div>
+
+  <!-- Modal confirmer suppression catégorie -->
+  <div class="modal-overlay" id="modal-confirm-cat">
+    <div class="modal modal-sm">
+      <h2 class="modal-title" style="font-size:1.1rem">Supprimer la catégorie ?</h2>
+      <p style="font-size:.85rem;color:var(--muted);margin-bottom:1.25rem;line-height:1.55">
+        Les transactions associées seront déplacées vers <strong>Autre</strong>. Action irréversible.
+      </p>
+      <div style="display:flex;gap:.6rem">
+        <button class="btn-secondary" id="cancelDeleteCat" style="flex:1">Annuler</button>
+        <button class="btn-danger" id="confirmDeleteCat" style="flex:1">Supprimer</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="toast" id="toast"></div>
+  <script src="app.js"></script>
+</body>
+</html>
