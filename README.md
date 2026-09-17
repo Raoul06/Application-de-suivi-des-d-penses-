@@ -1,2 +1,2 @@
-# Application-de-suivi-des-d-penses-
+# Application-de-suivi-des-dépenses-
 Sauvegarder ses dépenses quotidiennes afin de les analyser pour une meilleure gestion 
